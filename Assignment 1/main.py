@@ -52,9 +52,12 @@ print(f'[SHUFFLED] Standard error = {standard_error_sh:.3g}')
 # 1j)
 confidence_uppend_sh = 2 * standard_error_sh * np.sqrt(1/401 + (150000 - 100000) / np.sum((p_arr - 100000)**2))
 print(f'[SHUFFLED] 95% confidence on upper end of interval  = (+/-) {confidence_uppend_sh:.3g}')
+
+# plot figure
 plt.legend()
 plt.show()
 
+# Ideal gas law with average temperature
 rho_ideal_gas_T_ave = p_arr / (R * T_ave)
 true_A = 1 / (R*T_ave)
 
