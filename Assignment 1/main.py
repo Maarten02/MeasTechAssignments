@@ -99,13 +99,14 @@ if E2:
     omega_d = 2*np.pi / Td
     omega_n = omega_d / np.sqrt(1 - damping_ratio ** 2)
     T_n = 2 * np.pi / omega_n
-    m = k / omega_n ** 2
 
     print(f'natural frequency = {1/T_n:.3g} [Hz]')
     print(f'first peak = {max1:.6g} [mm]')
     print(f'second peak = {max2:.6g} [mm]')
     print(f'time between peaks = {Td:.3g} [s]')
     print(f'damping ratio = {damping_ratio:.3g}')
-    print(f'mass = {m:.3g} [kg]')
 
     # 1c) Determine the mass of the piston.
+    m = k / omega_n ** 2
+    print(f'mass = {m:.3g} [kg]')
+
