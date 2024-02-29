@@ -2,10 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-E1 = False
-E2 = False
-E3 = False
-E4 = False
+E1 = True
+E2 = True
+E3 = True
+E4 = True
 E5 = True
 
 
@@ -35,7 +35,7 @@ if E1:
     ###############
     ## Problem 1 ##
     ###############
-    print(15*'=', '\n== Problem 1 == \n', 15*'=', sep='')
+    print('\n', 15*'=', '\n== Problem 1 == \n', 15*'=', sep='')
     # 1a) dependent: p, independent: rho
 
     # 1b)
@@ -102,7 +102,7 @@ if E2:
     ###############
     ## Problem 2 ##
     ###############
-    print(15 * '=', '\n== Problem 2 == \n', 15 * '=', sep='')
+    print('\n', 15 * '=', '\n== Problem 2 == \n', 15 * '=', sep='')
     system_resp = np.genfromtxt('data/system_response_2024.dat', skip_header=1)
     time = system_resp[:, 0]
     recorded_position = system_resp[:, 1]
@@ -142,7 +142,7 @@ if E3:
     ###############
     ## Problem 3 ##
     ###############
-    print(15 * '=', '\n== Problem 3 == \n', 15 * '=', sep='')
+    print('\n', 15 * '=', '\n== Problem 3 == \n', 15 * '=', sep='')
     # Experimental conditions
     Re_x = 1e6
     Pr = 0.7
@@ -171,17 +171,17 @@ if E3:
     # plt.show()
     # ==> samples are already independent
 
-    Sx = np.sqrt(1/(len(measured_h)-1) * np.sum((measured_h - ave_sig) ** 2))
-    Sx_bar = Sx / np.sqrt(len(measured_h))
+    Sx_E3 = Sx(measured_h)
+    Sx_bar_E3 = Sx_E3 / np.sqrt(len(measured_h))
 
     delta_1 = abs(h_1 - ave_sig)
     delta_2 = abs(h_2 - ave_sig)
 
     test1 = test2 = 'Accepted'
-    if delta_1 > 3*Sx_bar:
+    if delta_1 > 3*Sx_bar_E3:
         test1 = 'Rejected'
 
-    if delta_2 > 3*Sx_bar:
+    if delta_2 > 3*Sx_bar_E3:
         test2 = 'Rejected'
 
     print(f'{test1} expression 1: h1 = {h_1:.3g} while average measured h = {ave_sig:.3g}')
@@ -191,7 +191,7 @@ if E4:
     ###############
     ## Problem 4 ##
     ###############
-    print(15 * '=', '\n== Problem 4 ==\n', 15 * '=', sep='')
+    print('\n', 15 * '=', '\n== Problem 4 ==\n', 15 * '=', sep='')
 
     # 4a) Determine the total uncertainty on x r at 95% confidence level
     # 95% confidence --> 2Sx
@@ -223,7 +223,7 @@ if E5:
     ###############
     ## Problem 5 ##
     ###############
-    print(15 * '=', '\n== Problem 5 ==\n', 15 * '=', sep='')
+    print('\n', 15 * '=', '\n== Problem 5 ==\n', 15 * '=', sep='')
     signal = np.genfromtxt('data/signal_x_2024.dat', skip_header=1)
     i_arr, autocorfunc = get_Cxx(15, signal)
     plt.plot(i_arr, autocorfunc)
