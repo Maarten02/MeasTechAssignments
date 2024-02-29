@@ -110,11 +110,11 @@ if E2:
     A = 2.2 # [cm^2]
     k = 1.8e3 # [N/m]
 
-    # 1a) Determine the magnitude of the stepwise change in pressure (i.e. step height).
+    # 2a) Determine the magnitude of the stepwise change in pressure (i.e. step height).
     magnitude = recorded_position[-1] - recorded_position[0]
     print(f'Step change = {magnitude:.3g} [mm]')
 
-    # 1b) Determine the natural frequency and the damping ratio.
+    # 2b) Determine the natural frequency and the damping ratio.
     max1idx = np.argmax(recorded_position)
     min1idx = np.argmin(recorded_position[max1idx:]) + max1idx
     max2idx = np.argmax(recorded_position[min1idx:]) + min1idx
@@ -134,7 +134,7 @@ if E2:
     print(f'time between peaks = {Td:.3g} [s]')
     print(f'damping ratio = {damping_ratio:.3g}')
 
-    # 1c) Determine the mass of the piston.
+    # 2c) Determine the mass of the piston.
     m = k / omega_n ** 2
     print(f'mass = {m:.3g} [kg]')
 
