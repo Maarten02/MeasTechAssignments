@@ -1,14 +1,41 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+import math
 
 E1 = False
-E2 = True
+E2 = False
+E3 = False
+E4 = False
+E5 = True
+
+
+def cor(arr1, arr2):
+    return np.sum((arr1 - np.average(arr1)) * (arr2 - np.average(arr2))) / len(arr1)
+
+def get_Rxx(sig, ave_sig, shift):
+    N_overlap = len(sig) - shift
+    product = (sig[:N_overlap] - ave_sig) * (sig[shift:] - ave_sig)
+    Rxx = np.sum(product) / N_overlap
+
+    return Rxx
+
+def get_Cxx(max_i, signal):
+    ave_sig = np.average(signal)
+    Rxx_zero = get_Rxx(signal, ave_sig, 0)
+    autocorfunc = [1]
+    for shift in range(1, max_i+1):
+        Cxx = get_Rxx(signal, ave_sig, shift) / Rxx_zero
+        autocorfunc.append(Cxx)
+
+    return range(max_i+1), autocorfunc
+
+Sx = lambda signal: np.sqrt(1/(len(signal)-1) * np.sum((signal - np.average(signal)) ** 2))
 
 if E1:
     ###############
     ## Problem 1 ##
     ###############
+    print(15*'=', '\n== Problem 1 == \n', 15*'=', sep='')
     # 1a) dependent: p, independent: rho
 
     # 1b)
@@ -75,6 +102,7 @@ if E2:
     ###############
     ## Problem 2 ##
     ###############
+    print(15 * '=', '\n== Problem 2 == \n', 15 * '=', sep='')
     system_resp = np.genfromtxt('data/system_response_2024.dat', skip_header=1)
     time = system_resp[:, 0]
     recorded_position = system_resp[:, 1]
@@ -110,3 +138,121 @@ if E2:
     m = k / omega_n ** 2
     print(f'mass = {m:.3g} [kg]')
 
+if E3:
+    ###############
+    ## Problem 3 ##
+    ###############
+    print(15 * '=', '\n== Problem 3 == \n', 15 * '=', sep='')
+    # Experimental conditions
+    Re_x = 1e6
+    Pr = 0.7
+    x = 1.2 # [m]
+    k = 0.0235 # [W/mK]
+    nu = 11.42e-6 # [m^2/s]
+
+    # Data
+    measured_h = np.genfromtxt('data/heatsignal_2024.dat', skip_header=1)
+    time = np.linspace(0.001, 1, 1000)
+    ave_sig = np.average(measured_h)
+
+    # Expressions 1 & 2
+    Nu_x_1 = 0.029 * Re_x**0.8 * Pr**0.43
+    C_f = 0.0592 * Re_x ** -0.2
+    Nu_x_2 = (C_f/2 * Re_x * Pr) / (1 + 12.7 * (C_f/2)**0.5 * (Pr**(2/3) - 1))
+
+    h_1 = Nu_x_1 * k / x
+    h_2 = Nu_x_2 * k / x
+
+    # determine independent samples
+    i_arr, autocorfunc = get_Cxx(10, measured_h)
+
+    # plt.plot(i_arr, autocorfunc)
+    # plt.grid()
+    # plt.show()
+    # ==> samples are already independent
+
+    Sx = np.sqrt(1/(len(measured_h)-1) * np.sum((measured_h - ave_sig) ** 2))
+    Sx_bar = Sx / np.sqrt(len(measured_h))
+
+    delta_1 = abs(h_1 - ave_sig)
+    delta_2 = abs(h_2 - ave_sig)
+
+    test1 = test2 = 'Accepted'
+    if delta_1 > 3*Sx_bar:
+        test1 = 'Rejected'
+
+    if delta_2 > 3*Sx_bar:
+        test2 = 'Rejected'
+
+    print(f'{test1} expression 1: h1 = {h_1:.3g} while average measured h = {ave_sig:.3g}')
+    print(f'{test2} expression 2: h2 = {h_2:.3g} while average measured h = {ave_sig:.3g}')
+
+if E4:
+    ###############
+    ## Problem 4 ##
+    ###############
+    print(15 * '=', '\n== Problem 4 ==\n', 15 * '=', sep='')
+
+    # 4a) Determine the total uncertainty on x r at 95% confidence level
+    # 95% confidence --> 2Sx
+    u_resolution = 100
+    u_offset = 50
+    u_total = np.sqrt(u_resolution**2 + u_offset**2)
+    print(f'total uncertainty = {u_total:.3g}')
+    t_ref = -30
+
+    # 4b) Determine the total uncertainty on x p at 95% confidence level for t = 10 min
+    # and t = 60 min.
+
+    # partial derivatives:
+    ddxr_0 = lambda t: 1 - t/t_ref
+    ddxr_t_ref = lambda t: t/t_ref
+
+    u_1_10 = ddxr_0(10) * u_resolution
+    u_2_10 = ddxr_t_ref(10) * u_resolution
+    u_total_10 = np.sqrt(u_1_10 ** 2 + u_2_10 ** 2)
+
+    u_1_60 = ddxr_0(60) * u_resolution
+    u_2_60 = ddxr_t_ref(60) * u_resolution
+    u_total_60 = np.sqrt(u_1_60 ** 2 + u_2_60 ** 2)
+
+    print(f'At t=10 min --> u_xp = {u_total_10:.3g} [m]')
+    print(f'At t=60 min --> u_xp = {u_total_60:.3g} [m]')
+
+if E5:
+    ###############
+    ## Problem 5 ##
+    ###############
+    print(15 * '=', '\n== Problem 5 ==\n', 15 * '=', sep='')
+    signal = np.genfromtxt('data/signal_x_2024.dat', skip_header=1)
+    i_arr, autocorfunc = get_Cxx(15, signal)
+    plt.plot(i_arr, autocorfunc)
+    plt.grid()
+    plt.show()
+
+    # 5a) the variance of the noise
+    average_sig = np.average(signal)
+    Ssig = Sx(signal)
+    i_independent = np.where(np.array(autocorfunc) < 0.05)[0][0]
+    print(f'timespteps for independence = {i_independent}')
+    print(f'variance of the noise = Ssig = {Ssig:.3g}')
+
+    # 5b) the actual variance of the physical variable x,
+    print(f'variance of the physical variable = Ssig / sqrt(N) = {Ssig/np.sqrt(len(signal)):.3g}')
+
+    # 5c) the number of independent samples.
+    print(f'number of independent signal = {math.floor(len(signal) / i_independent)}')
+    # 5d) Generate a random signal of the same length as x i and plot the correlation
+    # function for this random signal.
+
+    random_signal = np.random.rand(len(signal))
+    corfunc = []
+
+    for i in range(15):
+        arr1 = signal[:len(signal)-i]
+        arr2 = random_signal[i:]
+        corfunc.append(cor(arr1, arr2))
+    shift = [i for i in range(15)]
+    plt.plot(shift, corfunc)
+    plt.grid()
+    plt.show()
