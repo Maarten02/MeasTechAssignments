@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
+# select which sub problems to execute
 E1 = True
 E2 = True
 E3 = True
