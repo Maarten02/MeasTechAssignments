@@ -58,10 +58,10 @@ if E1:
     ax.plot(p_arr, rho_fit, label='Linear fit [N-SHUF]')
 
     # 1e)
-    standard_error = np.sum((rho_arr - rho_fit) ** 2) / (401 - (1 + 1))
+    standard_error = np.sqrt(np.sum((rho_arr - rho_fit) ** 2) / (401 - (1 + 1)))
     print(f'Standard error = {standard_error:.3g}')
 
-    # 1f)
+    # 1f) INCORRECT!
     confidence_uppend = 2 * standard_error * np.sqrt(1/401 + (150000 - 100000) / np.sum((p_arr - 100000)**2))
     print(f'95% confidence on upper end of interval  = (+/-) {confidence_uppend:.3g}')
 
@@ -70,14 +70,14 @@ if E1:
     shuffled_T = T_arr[shuffled_indices]
     rho_arr_sh = p_arr / (R * shuffled_T)
 
-    # 1h)
+    # 1h) intercept INCORRECT!
     p_vs_rho_linfit_sh = np.polyfit(p_arr, rho_arr_sh, 1)
     print(f'\n[SHUFFLED] Linear fit rho = {p_vs_rho_linfit_sh[0]:.6g}p + {p_vs_rho_linfit_sh[1]:.4g}')
     rho_fit_sh = p_arr * p_vs_rho_linfit_sh[0] + p_vs_rho_linfit_sh[1]
     ax.plot(p_arr, rho_fit_sh, label='Linear fit [SHUF]')
 
     # 1i)
-    standard_error_sh = np.sum((rho_arr_sh - rho_fit_sh) ** 2) / (401 - (1 + 1))
+    standard_error_sh = np.sqrt(np.sum((rho_arr_sh - rho_fit_sh) ** 2) / (401 - (1 + 1)))
     print(f'[SHUFFLED] Standard error = {standard_error_sh:.3g}')
 
     # 1j)
@@ -128,15 +128,15 @@ if E2:
     omega_n = omega_d / np.sqrt(1 - damping_ratio ** 2)
     T_n = 2 * np.pi / omega_n
 
-    print(f'natural frequency = {1/T_n:.3g} [Hz]')
-    print(f'first peak = {max1:.6g} [mm]')
-    print(f'second peak = {max2:.6g} [mm]')
-    print(f'time between peaks = {Td:.3g} [s]')
-    print(f'damping ratio = {damping_ratio:.3g}')
+    print(f'natural frequency = {1/T_n:.3g} [Hz]') # incorrect
+    print(f'first peak = {max1:.6g} [mm]') # correct
+    print(f'second peak = {max2:.6g} [mm]') # correct
+    print(f'time between peaks = {Td:.3g} [s]') # correct
+    print(f'damping ratio = {damping_ratio:.3g}') # correct
 
     # 1c) Determine the mass of the piston.
     m = k / omega_n ** 2
-    print(f'mass = {m:.3g} [kg]')
+    print(f'mass = {m:.3g} [kg]') # correct
 
 if E3:
     ###############
@@ -166,13 +166,14 @@ if E3:
     # determine independent samples
     i_arr, autocorfunc = get_Cxx(10, measured_h)
 
-    # plt.plot(i_arr, autocorfunc)
-    # plt.grid()
-    # plt.show()
-    # ==> samples are already independent
+    plt.plot(i_arr, autocorfunc)
+    plt.grid()
+    plt.title('this')
+    plt.show()
+    # ==> samples are already independent --> NO, delta i = 10
 
     Sx_E3 = Sx(measured_h)
-    Sx_bar_E3 = Sx_E3 / np.sqrt(len(measured_h))
+    Sx_bar_E3 = Sx_E3 / np.sqrt(len(measured_h)/10)
 
     delta_1 = abs(h_1 - ave_sig)
     delta_2 = abs(h_2 - ave_sig)
@@ -210,11 +211,11 @@ if E4:
 
     u_1_10 = ddxr_0(10) * u_resolution
     u_2_10 = ddxr_t_ref(10) * u_resolution
-    u_total_10 = np.sqrt(u_1_10 ** 2 + u_2_10 ** 2)
+    u_total_10 = np.sqrt(u_1_10 ** 2 + u_2_10 ** 2) # missing u_offset
 
     u_1_60 = ddxr_0(60) * u_resolution
     u_2_60 = ddxr_t_ref(60) * u_resolution
-    u_total_60 = np.sqrt(u_1_60 ** 2 + u_2_60 ** 2)
+    u_total_60 = np.sqrt(u_1_60 ** 2 + u_2_60 ** 2) # missing u_offset
 
     print(f'At t=10 min --> u_xp = {u_total_10:.3g} [m]')
     print(f'At t=60 min --> u_xp = {u_total_60:.3g} [m]')
@@ -234,14 +235,14 @@ if E5:
     average_sig = np.average(signal)
     Ssig = Sx(signal)
     i_independent = np.where(np.array(autocorfunc) < 0.05)[0][0]
-    print(f'timespteps for independence = {i_independent}')
+    print(f'timespteps for independence = {i_independent}') # correct
     print(f'variance of the noise = Ssig = {Ssig:.3g}')
 
-    # 5b) the actual variance of the physical variable x,
+    # 5b) the actual variance of the physical variable x, | extrapolate the autocorrelation to zero to remove noise
     print(f'variance of the physical variable = Ssig / sqrt(N) = {Ssig/np.sqrt(len(signal)):.3g}')
 
     # 5c) the number of independent samples.
-    print(f'number of independent signal = {math.floor(len(signal) / i_independent)}')
+    print(f'number of independent signal = {math.floor(len(signal) / i_independent)}') # correct
     # 5d) Generate a random signal of the same length as x i and plot the correlation
     # function for this random signal.
 
