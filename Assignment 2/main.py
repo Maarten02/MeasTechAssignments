@@ -6,6 +6,8 @@ pt = [['Problem', 'Parameter', 'Value', 'Unit']]
 execute_problem1 = True
 execute_problem2 = True
 execute_problem3 = True
+execute_problem4 = True
+
 
 # ======================================================================
 # =                           Problem 1                                =
@@ -108,8 +110,87 @@ if execute_problem2:
 if execute_problem3:
 
     # ================= 3 (a) ======================
-    pass
+    clock_speed = 10e6
+    bits = 12
+    N_variables = 1 + 2 + 1
 
+    max_sampling_f = clock_speed / bits
+    pt.append(['3a', 'max sampling f', max_sampling_f, 'Hz'])
+
+    # ================= 3 (b) ======================
+    max_signal_f = max_sampling_f / 2
+    pt.append(['3b', 'max signal f', max_signal_f, 'Hz'])
+    # filter such that the signal contains no frequencies greater than permitted.
+
+    # ================= 3 (c) ======================
+    # A logarithmic amplifier is probably suitable for a microphone
+    # or a sensor that measures a signal with extreme magnitude variations.
+
+# ======================================================================
+# =                           Problem 4                                =
+# ======================================================================
+if execute_problem4:
+
+    # ================= 4 (a) ======================
+    # sampling frequency is twice the Nyquist frequency
+    # so that sampling frequency is 100 Hz s.t. T=0.01 s
+
+    # ================= 4 (b) ======================
+    # 68 Hz falls back onto 32 Hz (f_N = 50 Hz >> -1 * (68 - 100)) = 32
+    # 102 Hz falls back onto 2 Hz (102 - 100 = 2)
+
+    # ================= 4 (c) ======================
+    # Approach 1: set tau with 40 Hz and set k with 68 Hz >> 10 stages, f_cutoff = 48.6 Hz
+    k = 1
+    run = True
+    while run:
+
+        tau = ((1/0.99) ** 2 - 1) ** (1/(2*k)) / (40 * 2 * math.pi)
+        h1_gain = 1 / math.sqrt(1 + (68 * 2 * math.pi * tau) ** (2 * k))
+        f40_gain = 1 / math.sqrt(1 + (40 * 2 * math.pi * tau) ** (2 * k))
+
+        if h1_gain > 0.05:
+            print(f'h1 gain = {h1_gain:.3g} >> Too large >> Add stage')
+            print(f'f40 gain = {f40_gain:.3g}')
+            k += 1
+
+        elif 0.05 > h1_gain > 0:
+            print(f'h1 gain = {h1_gain:.3g} >> sufficient >> stop')
+            print(f'f40 gain = {f40_gain:.3g}')
+
+            run = False
+            print(f'for cutoff frequency = {1/(2*math.pi*tau):.3g} Hz and {k} stages, conditions satisfied')
+            pt.append(['4c', 'tau', tau, '?'])
+            pt.append(['4c', 'cutoff f', 1/(2*math.pi*tau), 'Hz'])
+            pt.append(['4c', 'k', k, '-'])
+
+    # Approach 2: set tau with 68 Hz and set k with 40 Hz >> also 10 stages, f_cutoff = 50.4 Hz
+    # k = 1
+    # run = True
+    # while run:
+    #
+    #     tau = ((1/0.05) ** 2 - 1) ** (1/(2*k)) / (68 * 2 * math.pi)
+    #     h1_gain = 1 / math.sqrt(1 + (68 * 2 * math.pi * tau) ** (2 * k))
+    #     f40_gain = 1 / math.sqrt(1 + (40 * 2 * math.pi * tau) ** (2 * k))
+    #
+    #     if f40_gain < 0.99:
+    #         print(f'h1 gain = {h1_gain:.3g}')
+    #         print(f'f40 gain = {f40_gain:.3g} >> Too small >> Add stage')
+    #         k += 1
+    #
+    #     elif f40_gain > 0.99:
+    #         print(f'h1 gain = {h1_gain:.3g}')
+    #         print(f'f40 gain = {f40_gain:.3g} >> sufficient >> stop')
+    #
+    #         run = False
+    #         print(f'for cutoff frequency = {1/(2*math.pi*tau):.3g} Hz and {k} stages, conditions satisfied')
+    #         pt.append(['4c', 'tau', tau, '?'])
+    #         pt.append(['4c', 'cutoff f', 1/(2*math.pi*tau), 'Hz'])
+    #         pt.append(['4c', 'k', k, '-'])
+
+    # Approach 3: evaluate tau first for f40, then find k for h1 and round k up to nearest integer
+
+    # ================= 4 (d) ======================
 
 
 
