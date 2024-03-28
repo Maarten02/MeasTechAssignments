@@ -15,7 +15,7 @@ execute_problem5 = True
 # ======================================================================
 if execute_problem1:
 
-    # ================= 1 (a) ======================
+    # ================= 1 (a) ====================== [v]
     R0_p1 = 10                 # [Ohm]
     T0_p1 = 20                 # [C]
     alpha = 0.00847         # [1/K]
@@ -27,39 +27,45 @@ if execute_problem1:
     R_D = R4_p1 * (Rs / R3_p1)                    # [Ohm]
     pt.append(['1a', 'Rd', R_D, 'Ohm'])
 
-    # ================= 1 (b) ======================
+    # ================= 1 (b) ====================== [v]
     heat_loss = 0.0113                  # [W]
     I_s3 = math.sqrt(heat_loss / Rs)    # [A]
     Em_p1 = I_s3 * (Rs + R3_p1)               # [V]
     pt.append(['1b', 'Em', Em_p1, 'V'])
 
-    # ================= 1 (c) ======================
+    # ================= 1 (c) ====================== [v]
     # Equal to Em
 
-    # ================= 1 (d) ======================
+    # ================= 1 (d) ====================== [v]
     # Choose filter A: 4kHz and k=1 since Nyquist frequency is 5 kHz
     # Should not capture any greater frequencies than Nyquist frequency
 
-    # ================= 1 (e) ======================
+    # ================= 1 (e) ====================== [x>>v]
     Asig = 0.29                             # [m/s]
     zeta = 0.4                              # [-]
     omega_n = 19 * 2 * math.pi              # [rad/s]
     omega_sig = 12 * 2 * math.pi            # [rad/s]
     omega_ratio = omega_sig / omega_n
     sys_gain = 1 / math.sqrt((1 - omega_ratio ** 2) ** 2 + (2 * zeta * omega_ratio) ** 2)
-    filter_gain = 1 / math.sqrt(1 + (omega_sig * 3.97 * 1e-5) ** 2)
+    filter_gain = 1 / math.sqrt(1 + (omega_sig / (2 * math.pi * 4 )) ** 2)
     A_out = Asig * sys_gain * filter_gain   # [m/s]
+
+    pt.append(['1e', 'sys gain', sys_gain, '-'])
+    pt.append(['1e', 'filter gain', filter_gain, '-'])
     pt.append(['1e', 'A out', A_out, 'm/s'])
 
-    # ================= 1 (f) ======================
+    # ================= 1 (f) ====================== [x]
     # bell curve with mean=5, sigma = 3.5
+
+    # cutoff at u = 0, cannot measure negative velocity...
+    # probability of u<0 is added to lower part of the bell curve.
 
 # ======================================================================
 # =                           Problem 2                                =
 # ======================================================================
 if execute_problem2:
 
-    # ================= 2 (a) ======================
+    # ================= 2 (a) ====================== [v]
     R1_p2 = 4000                   # [Ohm]
     R2_p2 = 7000                   # [Ohm]
     R3_p2 = 5000                   # [Ohm]
@@ -68,7 +74,9 @@ if execute_problem2:
     R4_p2 = R3_p2 * (R2_p2 / R1_p2)         # [Ohm]
     pt.append(['2a', 'R4', R4_p2, 'Ohm'])
 
-    # ================= 2 (b) ======================
+    # ================= 2 (b) ====================== [~v]
+    # -E_BC = E_AB - E_AC >> E_BC = E_AC - E_AB
+    # if E_m > 0 >> E_AC > E_AB >> E_C < E_B
     Em_p2 = -0.0037                  # [V]
     R_m = 80000
     I_m = Em_p2 / R_m
@@ -81,7 +89,7 @@ if execute_problem2:
     pt.append(['2b', 'R1', R1_msm_2b, 'Ohm'])
     pt.append(['2b', 'epsilon', epsilon_2b, '-'])
 
-    # ================= 2 (c) ======================
+    # ================= 2 (c) ====================== [~v]
     # eq1: I2 = I1 - Im
     # eq2: I4 = I3 + Im
     # eq3: EB = Ei - I1 * R1
@@ -98,11 +106,11 @@ if execute_problem2:
     epsilon_2c = (R1_msm_2c - R1_p2) / (R1_p2 * GF)
     pt.append(['2c', 'epsilon', epsilon_2c, '-'])
 
-    # ================= 2 (d) ======================
+    # ================= 2 (d) ====================== [v]
     loading_error = (epsilon_2c - epsilon_2b)/epsilon_2b * 100
     pt.append(['2d', 'loading error', loading_error, '%'])
 
-    # ================= 2 (e) ======================
+    # ================= 2 (e) ====================== [v]
     # Calibrate
 
 # ======================================================================
