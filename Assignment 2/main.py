@@ -7,6 +7,7 @@ execute_problem1 = True
 execute_problem2 = True
 execute_problem3 = True
 execute_problem4 = True
+execute_problem5 = True
 
 
 # ======================================================================
@@ -159,7 +160,7 @@ if execute_problem4:
             print(f'f40 gain = {f40_gain:.3g}')
 
             run = False
-            print(f'for cutoff frequency = {1/(2*math.pi*tau):.3g} Hz and {k} stages, conditions satisfied')
+            print(f'for cutoff frequency = {1/(2*math.pi*tau):.3g} Hz and {k} stages, conditions satisfied\n')
             pt.append(['4c', 'tau', tau, '?'])
             pt.append(['4c', 'cutoff f', 1/(2*math.pi*tau), 'Hz'])
             pt.append(['4c', 'k', k, '-'])
@@ -191,7 +192,31 @@ if execute_problem4:
     # Approach 3: evaluate tau first for f40, then find k for h1 and round k up to nearest integer
 
     # ================= 4 (d) ======================
+    # cannot say for sure, if sample period is multiple of wave period, truncation error does not matter,
+    # otherwise it depends on the sampling time, which is not given.
 
+# ======================================================================
+# =                           Problem 5                                =
+# ======================================================================
+#if execute_problem5:
+
+    # ================= 5 (a) ======================
+    # d(Ei)/dt = I_cap / C
+
+    # >> No current through amplifier
+    # >> -ve of amplifier = 0 V
+
+    # I_cap = I(R_2)
+    # I(R_2) = E_o / R_2
+    # E_o = I(R_2) * R_2 = R * C * [d(Ei)/dt]
+
+    # ================= 5 (b) ======================
+    # To ensure that the voltage is (approximately) zero at the RHS of the capacitor
+    # When this is the case, it we know that the voltage E_0 is proportional
+    # to the current flowing through R2.
+    # And the current is proportional to the change in voltage of the cap
+    # which is equal to the change in voltage E_i
+    # So it is enforced that the capacitor charges/discharges exactly along with Ei.
 
 
 print(tabulate(pt))
