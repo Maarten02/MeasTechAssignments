@@ -118,7 +118,8 @@ if execute_problem2:
 # ======================================================================
 if execute_problem3:
 
-    # ================= 3 (a) ======================
+    # ================= 3 (a) ======================  [x]
+    # variables are also recorded sequentially
     clock_speed = 10e6
     bits = 12
     N_variables = 1 + 2 + 1
@@ -126,29 +127,32 @@ if execute_problem3:
     max_sampling_f = clock_speed / bits
     pt.append(['3a', 'max sampling f', max_sampling_f, 'Hz'])
 
-    # ================= 3 (b) ======================
+    # ================= 3 (b) ====================== [~v]
     max_signal_f = max_sampling_f / 2
     pt.append(['3b', 'max signal f', max_signal_f, 'Hz'])
     # filter such that the signal contains no frequencies greater than permitted.
+    # Also, amplify
 
-    # ================= 3 (c) ======================
+    # ================= 3 (c) ====================== [~v]
     # A logarithmic amplifier is probably suitable for a microphone
     # or a sensor that measures a signal with extreme magnitude variations.
+    # >> non linear sensor response
 
 # ======================================================================
 # =                           Problem 4                                =
 # ======================================================================
 if execute_problem4:
 
-    # ================= 4 (a) ======================
+    # ================= 4 (a) ====================== [~v]
+    # Sampling period = 1 / lowest frequency
     # sampling frequency is twice the Nyquist frequency
     # so that sampling frequency is 100 Hz s.t. T=0.01 s
 
-    # ================= 4 (b) ======================
+    # ================= 4 (b) ====================== [v]
     # 68 Hz falls back onto 32 Hz (f_N = 50 Hz >> -1 * (68 - 100)) = 32
     # 102 Hz falls back onto 2 Hz (102 - 100 = 2)
 
-    # ================= 4 (c) ======================
+    # ================= 4 (c) ====================== [v]
     # Approach 1: set tau with 40 Hz and set k with 68 Hz >> 10 stages, f_cutoff = 48.6 Hz
     k = 1
     run = True
@@ -200,6 +204,8 @@ if execute_problem4:
     # Approach 3: evaluate tau first for f40, then find k for h1 and round k up to nearest integer
 
     # ================= 4 (d) ======================
+    # speed of car may  not be perfectly constant
+    # due to long sampling peak broadening should not be an issue
     # cannot say for sure, if sample period is multiple of wave period, truncation error does not matter,
     # otherwise it depends on the sampling time, which is not given.
 
@@ -218,7 +224,8 @@ if execute_problem4:
     # I(R_2) = E_o / R_2
     # E_o = I(R_2) * R_2 = R * C * [d(Ei)/dt]
 
-    # ================= 5 (b) ======================
+    # ================= 5 (b) ====================== [~v]
+    # negative feedback ensures stability of the system.
     # To ensure that the voltage is (approximately) zero at the RHS of the capacitor
     # When this is the case, it we know that the voltage E_0 is proportional
     # to the current flowing through R2.
