@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+from tifffile import imread
 
 def find_pixel_shift(bin_a, bin_b, plot=False):
 
@@ -18,7 +18,7 @@ def find_pixel_shift(bin_a, bin_b, plot=False):
     fluc_a = bin_a - np.mean(bin_a)
     fluc_b = bin_b - np.mean(bin_b)
 
-    M, N = sw_a.shape
+    M, N = bin_a.shape
     ov = 0.75
 
     max_x_shift = int((1 - ov) * N)
@@ -51,8 +51,27 @@ def find_pixel_shift(bin_a, bin_b, plot=False):
         R_map[i, j] = 1 / (M*N) * np.sum(fluc_a * shifted_fluc_b)
 
     R_max_i, R_max_j = np.unravel_index(np.argmax(R_map), R_map.shape)
-    delta_i = R_max_i - max_y_shift
-    delta_j = R_max_j - max_x_shift
+
+    R_1_i = R_max_i
+    R_2_i = R_1_i - 1
+    R_3_i = R_1_i + 1
+
+    R_1_j = R_max_j
+    R_2_j = R_1_j - 1
+    R_3_j = R_1_j + 1
+
+    i_p = (R_1_i + 1 / 2 * ((np.log(R_map[R_2_i, R_1_j]) - np.log(R_map[R_3_i, R_1_j]))
+                                               / (np.log(R_map[R_2_i, R_1_j])
+                                                  + np.log(R_map[R_3_i, R_1_j])
+                                                  - 2 * np.log(R_map[R_1_i, R_1_j]))))
+
+    j_p = (R_1_j + 1 / 2 * ((np.log(R_map[R_1_i, R_2_j]) - np.log(R_map[R_1_i, R_3_j]))
+                                               / (np.log(R_map[R_1_i, R_2_j])
+                                                  + np.log(R_map[R_1_i, R_3_j])
+                                                  - 2 * np.log(R_map[R_1_i, R_1_j]))))
+
+    delta_i = i_p - max_y_shift
+    delta_j = j_p - max_x_shift
 
     if plot:
         plt.imshow(R_map)
@@ -66,3 +85,9 @@ def find_pixel_shift(bin_a, bin_b, plot=False):
     return -1 * delta_i, -1 * delta_j
 
 
+if __name__ == "__main__":
+    sw_a = imread('data/Single_window_a.tiff')
+    sw_b = imread('data/Single_window_b.tiff')
+
+    delta_y, delta_x = find_pixel_shift(sw_a, sw_b, plot=True)
+    print(f'delta y = {delta_y}, delta x = {delta_x}')

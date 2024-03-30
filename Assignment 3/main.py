@@ -3,6 +3,7 @@ from tabulate import tabulate, SEPARATING_LINE
 import matplotlib.pyplot as plt
 import math
 from cross_correlate import find_pixel_shift
+from binning import find_velocity_field
 
 from tifffile import imread
 
@@ -94,7 +95,19 @@ if execute_problem2:
     sw_a = imread('data/Single_window_a.tiff')
     sw_b = imread('data/Single_window_b.tiff')
 
-    delta_y, delta_x = find_pixel_shift(sw_a, sw_b)
+    delta_y, delta_x = find_pixel_shift(sw_a, sw_b, plot=True)
 
+    pt.append(['2a', 'delta x', delta_x, 'pixels'])
+    pt.append(['2a', 'delta y', delta_y, 'pixels'])
+
+    # ================= 2 (b) ====================== []
+    im_a = imread('data/LOvort_0001_a.tif')
+    im_b = imread('data/LOvort_0001_b.tif')
+
+    #v_field = find_velocity_field(im_a, im_b)
+
+    u_arr, v_arr, x_pos_vel, y_pos_vel = find_velocity_field(im_a, im_b)
+    X, Y = np.meshgrid(x_pos_vel, y_pos_vel)
+    plt.quiver(X, Y, u_arr, v_arr)
 
 print(tabulate(pt))
