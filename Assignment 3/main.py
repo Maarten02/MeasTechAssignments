@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import math
 from cross_correlate import find_pixel_shift
 from binning import find_velocity_field
-
+from plotting import Plotting
 from tifffile import imread
 
 def print_lists(names, vals):
@@ -106,13 +106,40 @@ if execute_problem2:
     im_a = imread('data/LOvort_0001_a.tif')
     im_b = imread('data/LOvort_0001_b.tif')
 
-    im_a = np.flipud(im_a)
-    im_b = np.flipud(im_b)
-    #v_field = find_velocity_field(im_a, im_b)
+    # u_arr, v_arr, x_pos_vel, y_pos_vel = find_velocity_field(im_a, im_b, binsize, overlap)
+    # X, Y = np.meshgrid(x_pos_vel, y_pos_vel)
+    # plt.quiver(X, Y, u_arr, v_arr)
+    # plt.show()
 
-    u_arr, v_arr, x_pos_vel, y_pos_vel = find_velocity_field(im_a, im_b)
-    X, Y = np.meshgrid(x_pos_vel, y_pos_vel)
-    plt.quiver(X, Y, u_arr, v_arr)
-    plt.show()
+    # ================= 2 (c) ====================== []
+    # since the displacement is in the order of 1 px, the gaussian is necessary to
+    # provide the necessary precision, otherwise the velocity is quantized very coarsely
 
+    # ================= 2 (d) ====================== []
+    # the flow is a vortex
+
+    # ================= 2 (e) ====================== []
+    # plot_2e = Plotting(im_a, im_b, 32, 0.5)
+    # plot_2e.save()
+
+    # ================= 2 (f) ====================== []
+    # shows difference in grid, same spacing but slightly shifted
+    # Not very clear what actual difference is
+
+    # ================= 2 (g) ====================== []
+    # This one has way too low resolution
+    # plot_2g_64_00 = Plotting(im_a, im_b, 64, 0)
+    # plot_2g_64_00.save('vortex')
+
+    # This one messes up the vorticity, velocity seems OK
+    # plot_2g_16_75 = Plotting(im_a, im_b, 16, 0.75)
+    # plot_2g_16_75.save('vortex')
+
+    # ================= 2 (h) ====================== []
+    im_cyl_a = imread('data/Cylinder_a.tif')
+    im_cyl_b = imread('data/Cylinder_b.tif')
+    plot_2h = Plotting(im_cyl_a, im_cyl_b, 32, 0.5)
+    plot_2h.save('cylinder')
+
+    # if you don't take the fluctuations correlation results in spurious results
 print(tabulate(pt))

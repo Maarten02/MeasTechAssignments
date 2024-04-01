@@ -4,7 +4,8 @@ from cross_correlate import find_pixel_shift
 from tifffile import imread
 import warnings
 
-def find_velocity_field(image_a, image_b):
+
+def find_velocity_field(image_a, image_b, binsize, overlap):
 
     # divide image a and image b into bins
     N_a, M_a = image_a.shape
@@ -13,10 +14,9 @@ def find_velocity_field(image_a, image_b):
     if abs(N_a - N_b) > 1e-6 or abs(M_a - M_b) > 1e-6:
         raise Exception('Images not equal size')
 
-    bin_N = 32
-    bin_M = 32
+    bin_N = binsize
+    bin_M = binsize
 
-    overlap = 0.75
     N_spacing = (1 - overlap) * bin_N
     M_spacing = (1 - overlap) * bin_M
 
@@ -61,7 +61,5 @@ if __name__ == "__main__":
     u_arr, v_arr, x_pos_vel, y_pos_vel = find_velocity_field(im_a, im_b)
     X, Y = np.meshgrid(x_pos_vel, y_pos_vel)
     plt.quiver(x_pos_vel, y_pos_vel, u_arr, v_arr)
-    #plt.imshow(im_a)
-    #plt.imshow(im_b)
+
     plt.show()
-    hi = 1

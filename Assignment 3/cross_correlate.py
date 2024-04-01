@@ -19,13 +19,9 @@ def find_pixel_shift(bin_a, bin_b, plot=False):
     fluc_b = bin_b - np.mean(bin_b)
 
     M, N = bin_a.shape
-    ov = 0.3
 
-    max_x_shift = int((1 - ov) * N)
-    max_y_shift = int((1 - ov) * M)
-
-    # x_shift_arr = np.tile(np.arange(-1 * max_x_shift, max_x_shift + 1), (2 * max_y_shift + 1, 1))
-    # y_shift_arr = np.tile(np.arange(-1 * max_y_shift, max_y_shift + 1), (2 * max_x_shift + 1, 1)).T
+    max_x_shift = 15
+    max_y_shift = 15
 
     x_shift_arr, y_shift_arr = np.meshgrid(np.arange(-1 * max_x_shift, max_x_shift + 1),
                                            np.arange(-1 * max_y_shift, max_y_shift + 1))
@@ -63,15 +59,21 @@ def find_pixel_shift(bin_a, bin_b, plot=False):
     R_2_j = R_1_j - 1
     R_3_j = R_1_j + 1
 
-    i_p = (R_1_i + 1 / 2 * ((np.log(R_map[R_2_i, R_1_j]) - np.log(R_map[R_3_i, R_1_j]))
-                                               / (np.log(R_map[R_2_i, R_1_j])
-                                                  + np.log(R_map[R_3_i, R_1_j])
-                                                  - 2 * np.log(R_map[R_1_i, R_1_j]))))
+    try:
+        i_p = (R_1_i + 1 / 2 * ((np.log(R_map[R_2_i, R_1_j]) - np.log(R_map[R_3_i, R_1_j]))
+                                                   / (np.log(R_map[R_2_i, R_1_j])
+                                                      + np.log(R_map[R_3_i, R_1_j])
+                                                      - 2 * np.log(R_map[R_1_i, R_1_j]))))
+    except:
+        i_p = max_y_shift
 
-    j_p = (R_1_j + 1 / 2 * ((np.log(R_map[R_1_i, R_2_j]) - np.log(R_map[R_1_i, R_3_j]))
-                                               / (np.log(R_map[R_1_i, R_2_j])
-                                                  + np.log(R_map[R_1_i, R_3_j])
-                                                  - 2 * np.log(R_map[R_1_i, R_1_j]))))
+    try:
+        j_p = (R_1_j + 1 / 2 * ((np.log(R_map[R_1_i, R_2_j]) - np.log(R_map[R_1_i, R_3_j]))
+                                                   / (np.log(R_map[R_1_i, R_2_j])
+                                                      + np.log(R_map[R_1_i, R_3_j])
+                                                      - 2 * np.log(R_map[R_1_i, R_1_j]))))
+    except:
+        j_p = max_x_shift
 
     delta_i = i_p - max_y_shift
     delta_j = j_p - max_x_shift
