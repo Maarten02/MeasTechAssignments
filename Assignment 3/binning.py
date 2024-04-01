@@ -49,11 +49,19 @@ def find_velocity_field(image_a, image_b):
     return u_arr, v_arr, x_pos_vel, y_pos_vel
 
 if __name__ == "__main__":
-    im_a = imread('data/LOvort_0001_a.tif')
-    im_b = imread('data/LOvort_0001_b.tif')
+    im_a = imread('data/test_a.tif')
+    im_b = imread('data/test_b.tif')
+
+    im_a = np.dot(im_a[..., :3], [0.299, 0.587, 0.114])
+    im_b = np.dot(im_b[..., :3], [0.299, 0.587, 0.114])
+
+    im_a = np.flipud(im_a)
+    im_b = np.flipud(im_b)
 
     u_arr, v_arr, x_pos_vel, y_pos_vel = find_velocity_field(im_a, im_b)
     X, Y = np.meshgrid(x_pos_vel, y_pos_vel)
-    plt.quiver(X, Y, u_arr, v_arr)
+    plt.quiver(x_pos_vel, y_pos_vel, u_arr, v_arr)
+    #plt.imshow(im_a)
+    #plt.imshow(im_b)
     plt.show()
-    print('next')
+    hi = 1

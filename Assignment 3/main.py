@@ -94,6 +94,8 @@ if execute_problem2:
     # ================= 2 (a) ====================== []
     sw_a = imread('data/Single_window_a.tiff')
     sw_b = imread('data/Single_window_b.tiff')
+    sw_a = np.flipud(sw_a)
+    sw_b = np.flipud(sw_b)
 
     delta_y, delta_x = find_pixel_shift(sw_a, sw_b, plot=True)
 
@@ -104,10 +106,13 @@ if execute_problem2:
     im_a = imread('data/LOvort_0001_a.tif')
     im_b = imread('data/LOvort_0001_b.tif')
 
+    im_a = np.flipud(im_a)
+    im_b = np.flipud(im_b)
     #v_field = find_velocity_field(im_a, im_b)
 
     u_arr, v_arr, x_pos_vel, y_pos_vel = find_velocity_field(im_a, im_b)
     X, Y = np.meshgrid(x_pos_vel, y_pos_vel)
     plt.quiver(X, Y, u_arr, v_arr)
+    plt.show()
 
 print(tabulate(pt))
